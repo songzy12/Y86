@@ -1,0 +1,9 @@
+.pos 0
+init:	irmovl $0xa, %eax
+		wrint %eax
+		wrch %eax
+		irmovl $0x2c, %ebx
+		wrch %ebx
+		wrch %eax
+		halt
+string1: .byte 10

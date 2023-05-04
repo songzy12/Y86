@@ -1,0 +1,9 @@
+  0x000:              | .pos 0
+  0x000: 30f00a000000 | init:	irmovl $0xa, %eax
+  0x006: f30f         | 		wrint %eax
+  0x008: f20f         | 		wrch %eax
+  0x00a: 30f32c000000 | 		irmovl $0x2c, %ebx
+  0x010: f23f         | 		wrch %ebx
+  0x012: f20f         | 		wrch %eax
+  0x014: 00           | 		halt
+  0x015: 0a           | string1: .byte 10
