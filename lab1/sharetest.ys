@@ -1,0 +1,65 @@
+	.pos 0x300
+ShareMemory:
+
+	.pos 0x0
+init:
+	irmovl ShareMemory, %ebx
+	irmovl 0x1,%eax
+	rmexchange %eax,(%ebx)
+#if the number in %eax is not 0, then jump to B
+	andl %eax,%eax
+	jne B
+
+A:
+#set %esi as the counter
+	irmovl 0x0, %esi
+L1:
+#if having execute for 50 times, halt
+	irmovl 0x50, %eax
+	subl %esi, %eax
+	je finish
+L2:
+	irmovl ShareMemory, %eax
+	mrmovl (%eax), %ebx
+	irmovl 0x1, %ecx
+#if (%eax) is 1, jump to L2
+	subl %ebx, %ecx
+	je L2
+#haven't got time to imply read()
+	#read();
+#put the counter to %eax to indicate every successful execution
+	irmovl ShareMemory, %eax
+	rmmovl %esi, 0x1(%eax)
+#have the memory modified, set the signal to 1
+	irmovl ShareMemory, %eax
+	irmovl 0x1, %ebx
+	rmmovl %ebx, (%eax)
+#add 1 to the counter
+	iaddl 0x1, %esi
+	jmp L1
+
+B:
+#almost the same as A, except the dealing with signal 
+	irmovl 0x0, %esi
+L3:
+	irmovl 0x50, %eax
+	subl %esi, %eax
+	je finish
+L4:
+	irmovl ShareMemory, %eax
+	mrmovl (%eax), %ebx
+	irmovl 0x0, %ecx
+	subl %ebx, %ecx
+	je L4
+	#read();
+	irmovl ShareMemory, %eax
+	rmmovl %esi, 0x1(%eax)
+
+	irmovl ShareMemory, %eax
+	irmovl 0x0, %ebx
+	rmmovl %ebx, (%eax)
+	iaddl 0x1, %esi
+	jmp L3
+
+finish:
+	halt
